@@ -6,6 +6,10 @@ var PORT = process.env.PORT;
 app.get('/', (req, res) => {
   res.send("GET Request Called")
 })
+
+app.get('/test', (req, res) => {
+    res.send("Test Field")
+  })
   
 app.listen(PORT, function(err){
     if (err) console.log(err);

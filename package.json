@@ -1,0 +1,25 @@
+{
+  "name": "em_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.1",
+    "firebase-admin": "^11.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhanasra/em_api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhanasra/em_api/issues"
+  },
+  "homepage": "https://github.com/dhanasra/em_api#readme"
+}

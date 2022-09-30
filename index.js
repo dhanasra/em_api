@@ -32,6 +32,10 @@ categoryApp(app);
 cashEntryApp(app);
 memberApp(app);
 
+app.get('/',(req,res)=>{
+    return res.send("listening....");
+});
+
   
 app.listen(PORT, function(err){
     if (err) console.log(err);

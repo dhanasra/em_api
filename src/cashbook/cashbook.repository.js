@@ -11,8 +11,10 @@ class CashbookRepository {
         var userId = data.user.id;
         delete data.user
 
-        var today = Date.now();
-        var id = userId.substring(0,5)+"-"+today.valueOf();
+        var id = `CB-${userId}-${Date.now().valueOf()}`;
+
+        var user = await userRepo.details(userId);
+        var author = `${user.first_name} ${user.last_name}`;
         
         data['id'] = id;
         data['categories'] = [];
@@ -25,15 +27,14 @@ class CashbookRepository {
         data['activity'] = [
                 {
                     'action' : 'Created by',
-                    'by' : 'Dhana',
-                    'at' : today.valueOf()
-                }
+                    'by' : author,
+                    'at' : Date.now().valueOf()
+                } 
             ]
 
-        var result = await db.collection('Cashbook').doc(id).set(data);
-        
-        var userDetails = await userRepo.details(userId);
-        var cashbooks = userDetails.cashbooks;
+        await db.collection('Cashbook').doc(id).set(data);
+
+        var cashbooks = user.cashbooks;
         cashbooks.push(id);
         await userRepo.update(userId,{"cashbooks":cashbooks});
 

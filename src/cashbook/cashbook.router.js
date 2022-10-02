@@ -3,7 +3,7 @@ const { create, update, details, list,delete:cashbookDelete } = require('./cashb
 
 const router = express.Router();
 
-router.post('/', create);
+router.post('/user/:id', create);
 router.get('/user/:id', list);
 router.get('/:id',details);
 router.put('/:id',update);

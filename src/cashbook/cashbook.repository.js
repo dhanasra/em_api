@@ -6,10 +6,7 @@ const db = admin.firestore();
 
 class CashbookRepository {
 
-    async create(data){
-
-        var userId = data.user.id;
-        delete data.user
+    async create(userId, data){
 
         var id = `CB-${userId}-${Date.now().valueOf()}`;
 

@@ -1,69 +1,73 @@
-const { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, signInWithCustomToken } = require("firebase/auth");
-var admin = require('firebase-admin');
+const { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, signInWithPopup } = require("firebase/auth");
+const requestP = require('request-promise');
+const { apiKey } = require("../firebase.config");
 
 const auth = getAuth();
 
 class AuthRepository {
 
-    async registerWithEmailAndPasword(data){
-        var userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
-        
-        var idToken =await getAuth().currentUser.getIdToken(true);
-        var refreshToken = userCredential.user.refreshToken;
-        var tokenResult = await getAuth().currentUser.getIdTokenResult()
-
-        var id_token = {
-            "token": idToken,
-            "refresh_token": refreshToken,
-            "result":tokenResult
-        };
-
-        return id_token;
+    registerWithEmailAndPasword(data){
+        return new Promise((resolve, reject)=>{
+            createUserWithEmailAndPassword(auth, data.email, data.password)
+                .then(async (userCredential)=>{
+                    var access_token = userCredential.user.accessToken;
+                    var refresh_token = userCredential.user.refreshToken;
+                    var uid = userCredential.user.uid;
+                    resolve({
+                        "access_token": access_token,
+                        "refresh_token": refresh_token,
+                        "uid":uid
+                    });
+                })
+                .catch((e)=>{
+                    reject(e.code);
+                })
+        })
     }
 
-    async loginWithEmailAndPasword(data){
-
-        var value = await signInWithEmailAndPassword(auth, data.email, data.password)
-
-        var idToken = await getAuth().currentUser.getIdToken(true);
-
-        var id_token = {"token": idToken};
-
-        return id_token;
+    loginWithEmailAndPasword(data){
+        return new Promise((resolve, reject)=>{
+            signInWithEmailAndPassword(auth, data.email, data.password)
+                .then(async (userCredential)=>{
+                    var access_token = userCredential.user.accessToken;
+                    var refresh_token = userCredential.user.refreshToken;
+                    var uid = userCredential.user.uid;
+                    resolve({
+                        "access_token": access_token,
+                        "refresh_token": refresh_token,
+                        "uid":uid
+                    });
+                })
+                .catch((e)=>{
+                    reject(e.code);
+                })
+        })
     }
 
-    // async verifyIdToken(token){
-    //     const user = auth.currentUser;
-    //     if(user){
-    //         var decodedToken = await getAuth().verifyIdToken(token);
-    //         const uid = decodedToken.uid;
-    //         var isTokenExists = { "is_token_exists" : user.uid==uid };
-    //         return isTokenExists;
-    //     }else{
-    //         var isValid = await this.signInWithCustomtoken(token);
+    getAccessToken(data){
 
-    //         if(isValid){
-    //             var decodedToken = await getAuth().verifyIdToken(token);
-    //             const uid = decodedToken.uid;
-    //             var isTokenExists = { "is_token_exists" : user.uid==uid };
-    //         }else{
-    //             var isTokenExists = { "is_token_exists" : false };
-    //         }
-    //     }
-    // }
+        const refreshToken = data.refresh_token;
+        const headers = {'content-type': 'application/x-www-form-urlencoded'};
+        const refreshTokenUrl = `https://securetoken.googleapis.com/v1/token?key=${apiKey}`;
+        const body = `grant_type=refresh_token&refresh_token=${refreshToken}`;
 
-    // async signInWithCustomtoken(token){
-
-    //     var userCredential = await signInWithCustomToken(auth, token);
-
-    //     if(userCredential){
-    //         return true;
-    //     }else{
-    //         return false;
-    //     }
-    // }
-
-
+        return new Promise((resolve, reject)=>{
+            requestP.post({
+                headers: headers,
+                url: refreshTokenUrl,
+                body: body,
+                json: true    
+            }).then((data)=>{
+                resolve({
+                    "access_token": data.access_token,
+                    "refresh_token": data.refresh_token,
+                    "uid":data.user_id
+                });
+            }).catch(e=>{
+                reject(e.error);
+            });
+        })
+    }
 
 }
 

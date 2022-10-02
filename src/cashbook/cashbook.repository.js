@@ -1,18 +1,16 @@
 var admin = require('firebase-admin');
 const { utils } = require('../extension');
+const FieldValue = require('firebase-admin').firestore.FieldValue;
 const { userRepo } = require('../user/user.repository')
 
 const db = admin.firestore();
 
 class CashbookRepository {
 
-    async create(userId, data){
+    async create(user, data){
+        var uid = user.uid;
+        var id = `CB-${uid}-${Date.now().valueOf()}`;
 
-        var id = `CB-${userId}-${Date.now().valueOf()}`;
-
-        var user = await userRepo.details(userId);
-        var author = `${user.first_name} ${user.last_name}`;
-        
         data['id'] = id;
         data['categories'] = [];
         data['payment_modes'] = [];
@@ -24,16 +22,13 @@ class CashbookRepository {
         data['activity'] = [
                 {
                     'action' : 'Created by',
-                    'by' : author,
+                    'by' : user.email,
                     'at' : Date.now().valueOf()
                 } 
             ]
 
         await db.collection('Cashbook').doc(id).set(data);
-
-        var cashbooks = user.cashbooks;
-        cashbooks.push(id);
-        await userRepo.update(userId,{"cashbooks":cashbooks});
+        await db.collection('User').doc(uid).update({"cashbooks" : FieldValue.arrayUnion(id)});
 
         return data;
     }

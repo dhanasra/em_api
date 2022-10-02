@@ -15,9 +15,9 @@ module.exports.list = async function (req, res)  {
 
 
 module.exports.create = async function (req, res)  {
-    const { id } = req.params;
+    var user = req.user;
     var data = req.body;
-    var cashbook = await cashbookRepo.create(id, data);
+    var cashbook = await cashbookRepo.create(user, data);
     created(cashbook);
     return res.api(
         200,

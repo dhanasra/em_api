@@ -1,9 +1,10 @@
 const express = require('express');
+const { verifyToken } = require('../auth/auth.controller');
 const { create, update, details, list,delete:cashbookDelete } = require('./cashbook.controller');
 
 const router = express.Router();
 
-router.post('/user/:id', create);
+router.post('/', verifyToken, create);
 router.get('/user/:id', list);
 router.get('/:id',details);
 router.put('/:id',update);

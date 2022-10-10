@@ -33,10 +33,11 @@ class CashbookRepository {
         return data;
     }
 
-    async list(id){
+    async list(user){
+        var uid = user.uid;
         var cashbooks = [];
         
-        var userDetails = await userRepo.details(id);
+        var userDetails = await userRepo.details(user);
         var oldCashbooks = userDetails.cashbooks;
 
         var snapshot = await db.collection('Cashbook').where("id", "in", oldCashbooks).get();

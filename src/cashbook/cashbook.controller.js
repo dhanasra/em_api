@@ -2,8 +2,8 @@ const { cashbookRepo } = require("./cashbook.repository");
 const { created, updated, deleted } = require('./cashbook.events')
 
 module.exports.list = async function (req, res)  {
-    const { id } = req.params;
-    var cashbooks = await cashbookRepo.list(id);
+    var user = req.user;
+    var cashbooks = await cashbookRepo.list(user);
     return res.api(
         200,
         'cashbook.listed',

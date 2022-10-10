@@ -40,6 +40,10 @@ class CashbookRepository {
         var userDetails = await userRepo.details(user);
         var oldCashbooks = userDetails.cashbooks;
 
+        if(oldCashbooks.length==0){
+            return [];
+        }
+
         var snapshot = await db.collection('Cashbook').where("id", "in", oldCashbooks).get();
 
         snapshot.forEach(doc => {

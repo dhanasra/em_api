@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.post('/', verifyToken, create);
 router.get('/', verifyToken, list);
-router.get('/:id',details);
-router.put('/:id',update);
-router.delete('/:id',cashbookDelete);
+router.get('/:id',verifyToken, details);
+router.put('/:id',verifyToken, update);
+router.delete('/:id',verifyToken, cashbookDelete);
 
 module.exports.cashbookRouter = router

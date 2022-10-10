@@ -9,7 +9,7 @@ class MemberRepository {
 
     async create(cashbookId,data){
 
-        var id = data['mobile_number'];
+        var id = data['mobile_number'].replace(/[^a-zA-Z]/g, "");
 
         var cashbookDetails = await cashbookRepo.details(cashbookId);
         var members = [];
@@ -34,7 +34,7 @@ class MemberRepository {
             "cashbook_id" : cashbookId,
             "role" : data['role']
         };
-
+        
         if(doc.exists){
             await docRef.update({
                 "cashbooks" : FieldValue.arrayUnion(member)

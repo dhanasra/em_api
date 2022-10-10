@@ -21,7 +21,7 @@ class CashbookRepository {
             };
         data['activity'] = [
                 {
-                    'action' : 'Created by',
+                    'action' : 'Created',
                     'by' : user.email,
                     'at' : Date.now().valueOf()
                 } 

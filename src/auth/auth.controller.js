@@ -3,6 +3,22 @@ const { AuthError } = require("./auth.error");
 const { authenticator } = require("./auth.library");
 const { authRepo } = require("./auth.repository");
 
+module.exports.getLoginType = async function (req, res) {
+    const data = req.body;
+    try {
+        const payload = await authRepo.fetchSignInMethodForEmail(data);
+        return res.api(
+            200,
+            'auth.checked',
+            {
+                payload
+            }
+        );
+    } catch (e) {
+        new AuthError().authErrorHandler(e,req,res);
+    }
+}
+
 module.exports.register = async function (req, res) {
     const data = req.body;
     try {

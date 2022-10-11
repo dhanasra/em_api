@@ -1,10 +1,32 @@
-const { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, signInWithPopup } = require("firebase/auth");
+const { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, fetchSignInMethodsForEmail } = require("firebase/auth");
 const requestP = require('request-promise');
 const { apiKey } = require("../firebase.config");
 
 const auth = getAuth();
 
 class AuthRepository {
+
+    fetchSignInMethodForEmail(data){
+        return new Promise((resolve, reject)=>{
+            fetchSignInMethodsForEmail(auth, data.email)
+            .then((method)=>{
+                if(method.length>0 && method[0]=="password"){
+                    resolve({
+                        "type" : "SIGN IN",
+                        "mail" : data.email
+                    });
+                }else{
+                    resolve({
+                        "type" : "SIGN UP",
+                        "mail" : data.email
+                    });
+                }
+            })
+            .catch((e)=>{
+                reject(e.code);
+            })
+        })
+    }
 
     registerWithEmailAndPasword(data){
         return new Promise((resolve, reject)=>{

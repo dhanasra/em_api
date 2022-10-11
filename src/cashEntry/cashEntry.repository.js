@@ -50,7 +50,7 @@ class CashEntryRepository {
     update(id,cashEntryId,data){
         return new Promise((resolve, reject)=>{
             db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).update(data)
-            .then(()=>{
+            .then(async()=>{
                 var data = await this.details(id, cashEntryId);
                 resolve(data);
             })

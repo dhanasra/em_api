@@ -4,50 +4,68 @@ const db = admin.firestore();
 
 class CashEntryRepository { 
 
-    
+    create(cashbookId,data){
 
-    async create(cashbookId,data){
-
-        var today = Date.now();
-        var id = "CE-"+cashbookId.substring(0,5)+"-"+today.valueOf();
-        data['id'] = id;
-        data['activity'] = [
-            {
-                'action' : 'Created by',
-                'by' : 'Dhana',
-                'at' : today.valueOf()
-            }
-        ]
-
-        var result = await db.collection('Cashbook').doc(cashbookId).collection('CashEntry').doc(id).set(data);
-        return data;
+        return new Promise((resolve, reject)=>{
+            var today = Date.now();
+            var id = "CE-"+cashbookId.substring(0,5)+"-"+today.valueOf();
+            data['id'] = id;
+            data['activity'] = [
+                {
+                    'action' : 'Created by',
+                    'by' : 'Dhana',
+                    'at' : today.valueOf()
+                }
+            ]
+            db.collection('Cashbook').doc(cashbookId).collection('CashEntry').doc(id).set(data)
+                .then(()=>resolve(data))
+                .catch((e)=>reject(e));
+        })
     }
 
-    async list(id){
-
+    list(id){
         var cashEntries = [];
-        var snapshot = await db.collection('Cashbook').doc(id).collection('CashEntry').get();
-        snapshot.forEach(doc => {
-            cashEntries.push(doc.data());
-        });
-
-        return cashEntries;
+        return new Promise((resolve, reject)=>{
+            db.collection('Cashbook').doc(id).collection('CashEntry').get()
+            .then((snapshot)=>{
+                snapshot.forEach(doc => {
+                    cashEntries.push(doc.data());
+                });
+                resolve(cashEntries);
+            })
+            .catch((e)=>reject(e));
+        })
     }
 
-    async details(id, cashEntryId){
-        var doc = await db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).get();
-        return doc.data();
+    details(id, cashEntryId){
+        return new Promise((resolve, reject)=>{
+            db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).get()
+                .then((doc)=>{
+                    resolve(doc.data());
+                })
+                .catch((e)=>reject(e));
+        }) 
     }
 
-    async update(id,cashEntryId,data){
-        var result = await db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).update(data);
-        var data = await this.details(id, cashEntryId);
-        return data;
+    update(id,cashEntryId,data){
+        return new Promise((resolve, reject)=>{
+            db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).update(data)
+            .then(()=>{
+                var data = await this.details(id, cashEntryId);
+                resolve(data);
+            })
+            .catch((e)=>reject(e));
+        })   
     }
 
-    async delete(id, cashEntryId){
-        var result = await db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).delete();
-        return cashEntryId;
+    delete(id, cashEntryId){
+        return new Promise((resolve, reject)=>{
+            db.collection('Cashbook').doc(id).collection('CashEntry').doc(cashEntryId).delete()
+            .then(()=>{
+                resolve(cashEntryId);
+            })
+            .catch((e)=>reject(e));
+        })
     }
 
 }

@@ -19,6 +19,22 @@ module.exports.getLoginType = async function (req, res) {
     }
 }
 
+module.exports.forgotPassword = async function (req, res) {
+    const data = req.body;
+    try {
+        const payload = await authRepo.forgotPassword(data);
+        return res.api(
+            200,
+            'auth.forgot',
+            {
+                payload
+            }
+        );
+    } catch (e) {
+        new AuthError().authErrorHandler(e,req,res);
+    }
+}
+
 module.exports.register = async function (req, res) {
     const data = req.body;
     try {

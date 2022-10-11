@@ -1,4 +1,4 @@
-const { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, fetchSignInMethodsForEmail } = require("firebase/auth");
+const { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail } = require("firebase/auth");
 const requestP = require('request-promise');
 const { apiKey } = require("../firebase.config");
 
@@ -25,6 +25,18 @@ class AuthRepository {
             .catch((e)=>{
                 reject(e.code);
             })
+        })
+    }
+
+    forgotPassword(data){
+        return new Promise((resolve, reject)=>{
+            sendPasswordResetEmail(auth, data.email)
+                .then(()=>{
+                    resolve(data);
+                })
+                .catch((e)=>{
+                    reject(e.code);
+                })
         })
     }
 

@@ -50,7 +50,7 @@ class CashbookRepository {
                 }
         
                 db.collection('Cashbook').where("id", "in", oldCashbooks).get()
-                    .then(async ()=>{
+                    .then((snapshot)=>{
                         snapshot.forEach(doc => {
                             cashbooks.push(doc.data());
                         });

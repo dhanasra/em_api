@@ -12,7 +12,7 @@ class CashEntryRepository {
             data['id'] = id;
             data['activity'] = [
                 {
-                    'action' : 'Created by',
+                    'action' : 'Created',
                     'by' : 'Dhana',
                     'at' : today.valueOf()
                 }

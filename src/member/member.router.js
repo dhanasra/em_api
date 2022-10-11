@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/CB/:id', verifyToken, create);
 router.get('/:id', verifyToken, details);
-router.put('/cashbook/:id', verifyToken, update);
-router.delete('/cashbook/:id/member/:memberId', verifyToken, memberDelete);
+router.put('/CB/:id', verifyToken, update);
+router.delete('/:memberId/CB/:id', verifyToken, memberDelete);
 
 module.exports.memberRouter = router

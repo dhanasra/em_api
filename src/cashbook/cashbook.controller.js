@@ -3,63 +3,86 @@ const { created, updated, deleted } = require('./cashbook.events')
 
 module.exports.list = async function (req, res)  {
     var user = req.user;
-    var cashbooks = await cashbookRepo.list(user);
-    return res.api(
-        200,
-        'cashbook.listed',
-        {
-            cashbooks
-        }
-    );
+    try{
+        var cashbooks = await cashbookRepo.list(user);
+        return res.api(
+            200,
+            'cashbook.listed',
+            {
+                cashbooks
+            } 
+        );
+    }catch(e){
+        throw Error(e);
+    }  
 }
 
 
 module.exports.create = async function (req, res)  {
     var user = req.user;
     var data = req.body;
-    var cashbook = await cashbookRepo.create(user, data);
-    created(cashbook);
-    return res.api(
-        200,
-        'cashbook.created',
-        {
-            cashbook
-        }
-    );
+    try{
+        var cashbook = await cashbookRepo.create(user, data);
+        created(cashbook);
+        return res.api(
+            200,
+            'cashbook.created',
+            {
+                cashbook
+            }
+        );
+    }catch(e){
+        throw Error(e);
+    }  
 }
 
 module.exports.details = async function(req, res) {
     const { id } = req.params;
-    var cashbook = await cashbookRepo.details(id);
-    return res.api(
-        200,
-        'cashbook.details',
-        {
-            cashbook
-        }
-    );
+
+    try{
+        var cashbook = await cashbookRepo.details(id);
+        return res.api(
+            200,
+            'cashbook.details',
+            {
+                cashbook
+            }
+        );
+    }catch(e){
+        throw Error(e);
+    }
 }
 
 module.exports.update = async function(req, res) {
     const { id } = req.params;
     var data = req.body;
-    var cashbook = await cashbookRepo.update(id,data);
-    updated(cashbook);
-    return res.api(
-        200,
-        'cashbook.updated',
-        {
-            cashbook
-        }
-    );
+
+    try{
+        var cashbook = await cashbookRepo.update(id,data);
+        updated(cashbook);
+        return res.api(
+            200,
+            'cashbook.updated',
+            {
+                cashbook
+            }
+        );
+    }catch(e){
+        throw Error(e);
+    }
 }
 
 module.exports.delete = async function(req, res) {
     const { id } = req.params;
-    var cashbookId = await cashbookRepo.delete(id);
-    deleted(cashbookId);
-    return res.api(
-        200,
-        'cashbook.deleted'
-    );
+
+    try{
+        var cashbookId = await cashbookRepo.delete(id);
+        deleted(cashbookId);
+        return res.api(
+            200,
+            'cashbook.deleted'
+        );
+    }catch(e){
+        throw Error(e);
+    }
 }

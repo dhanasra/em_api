@@ -1,4 +1,5 @@
 var admin = require('firebase-admin');
+const FieldValue = require('firebase-admin').firestore.FieldValue;
 const { utils } = require('../extension');
 const { cashbookRepo } = require('../cashbook/cashbook.repository')
 
@@ -6,25 +7,13 @@ const db = admin.firestore();
 
 class CategoryRepository { 
 
-    async create(data){
-
-        var cashbookId = data.cashbook.id;
-        delete data.cashbook
-
-        var today = Date.now();
-        var id = cashbookId.substring(0,5)+"-"+today.valueOf();
-        data['id'] = id;
-
-        var cashbookDetails = await cashbookRepo.details(cashbookId);
-        var categories = cashbookDetails.categories;
-        if(categories.some(e=>e['category']===data['category'])){
-           return data; 
-        }
-
-        categories.push(data);
-        await cashbookRepo.update(cashbookId,{"categories":categories});
-
-        return data;
+    create(id, data){
+        return new Promise((resolve, reject)=>{
+            data['id'] = utils.formId(id);
+            db.collection('Cashbook').doc(id).update({"categories" : FieldValue.arrayUnion(data)})
+                .then(()=>resolve(data))
+                .catch((e)=>reject(e));
+        });
     }
 
     async list(id){

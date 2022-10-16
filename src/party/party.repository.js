@@ -1,4 +1,5 @@
 var admin = require('firebase-admin');
+const FieldValue = require('firebase-admin').firestore.FieldValue;
 const { utils } = require('../extension');
 const { userRepo } = require('../user/user.repository')
 
@@ -6,25 +7,13 @@ const db = admin.firestore();
 
 class PartyRepository { 
 
-    async create(data){
-
-        var userId = data.user.id;
-        delete data.user
-
-        var today = Date.now();
-        var id = userId.substring(0,5)+"-"+today.valueOf();
-        data['id'] = id;
-
-        var userDetails = await userRepo.details(userId);
-        var parties = userDetails.parties;
-        if(parties.some(e=>e['mobile_number']===data['mobile_number'])){
-           return data; 
-        }
-
-        parties.push(data);
-        await userRepo.update(userId,{"parties":parties});
-
-        return data;
+    create(user, data){
+        return new Promise((resolve, reject)=>{
+            data['id'] = utils.formId(user.uid);
+            db.collection('User').doc(user.uid).update({"parties" : FieldValue.arrayUnion(data)})
+                .then(()=>resolve(data))
+                .catch((e)=>reject(e));
+        });
     }
 
     async list(id){

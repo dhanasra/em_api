@@ -46,7 +46,8 @@ class CashbookRepository {
                 var oldCashbooks = userDetails.cashbooks;
     
                 if(oldCashbooks.length==0){
-                    return [];
+                    resolve([]);
+                    return;
                 }
         
                 db.collection('Cashbook').where("id", "in", oldCashbooks).get()
@@ -64,11 +65,11 @@ class CashbookRepository {
         })
     }
 
-    async details(id){
+    details(id){
         return new Promise((resolve, reject)=>{
             db.collection('Cashbook').doc(id).get()
                 .then((doc)=>resolve(doc.data()))
-                .catch((e)=>reject(e.code))
+                .catch((e)=>reject(e.code));
         })
     }
 

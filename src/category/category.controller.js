@@ -15,16 +15,21 @@ module.exports.list = async function (req, res)  {
 
 
 module.exports.create = async function (req, res)  {
-    var data = req.body;
-    var category = await categoryRepo.create(data);
-    created(category);
-    return res.api(
-        200,
-        'category.created',
-        {
-            category
-        }
-    );
+    const { id } = req.params;
+    const data = req.body;
+    try{
+        var category = await categoryRepo.create(id, data);
+        created(category);
+        return res.api(
+            200,
+            'category.created',
+            {
+                category
+            }
+        );
+    }catch(e){
+        throw(e);
+    }
 }
 
 module.exports.details = async function(req, res) {

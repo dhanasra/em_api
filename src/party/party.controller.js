@@ -15,16 +15,21 @@ module.exports.list = async function (req, res)  {
 
 
 module.exports.create = async function (req, res)  {
-    var data = req.body;
-    var party = await partyRepo.create(data);
-    created(party);
-    return res.api(
-        200,
-        'party.created',
-        {
-            party
-        }
-    );
+    var user = req.user;
+    const data = req.body;
+    try{
+        var party = await partyRepo.create(user, data);
+        created(party);
+        return res.api(
+            200,
+            'party.created',
+            {
+                party
+            }
+        );
+    }catch(e){
+        throw(e);
+    }
 }
 
 module.exports.details = async function(req, res) {

@@ -15,16 +15,21 @@ module.exports.list = async function (req, res)  {
 
 
 module.exports.create = async function (req, res)  {
-    var data = req.body;
-    var paymentMode = await paymentModeRepo.create(data);
-    created(paymentMode);
-    return res.api(
-        200,
-        'paymentMode.created',
-        {
-            paymentMode
-        }
-    );
+    const { id } = req.params;
+    const data = req.body;
+    try{
+        var paymentMode = await paymentModeRepo.create(id, data);
+        created(paymentMode);
+        return res.api(
+            200,
+            'paymentMode.created',
+            {
+                paymentMode
+            }
+        );
+    }catch(e){
+        throw(e);
+    }
 }
 
 module.exports.details = async function(req, res) {

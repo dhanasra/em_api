@@ -1,4 +1,5 @@
 var admin = require('firebase-admin');
+const { utils } = require('../extension');
 
 const db = admin.firestore();
 
@@ -7,17 +8,15 @@ class CashEntryRepository {
     create(cashbookId,data){
 
         return new Promise((resolve, reject)=>{
-            var today = Date.now();
-            var id = "CE-"+cashbookId.substring(0,5)+"-"+today.valueOf();
-            data['id'] = id;
+            data['id'] = utils.formId(cashbookId)
             data['activity'] = [
                 {
                     'action' : 'Created',
                     'by' : 'Dhana',
-                    'at' : today.valueOf()
+                    'at' : Date.now()
                 }
             ]
-            db.collection('Cashbook').doc(cashbookId).collection('CashEntry').doc(id).set(data)
+            db.collection('Cashbook').doc(cashbookId).collection('CashEntry').doc(data['id']).set(data)
                 .then(()=>resolve(data))
                 .catch((e)=>reject(e));
         })

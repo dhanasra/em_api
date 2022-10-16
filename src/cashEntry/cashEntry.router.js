@@ -4,7 +4,7 @@ const { create, list, details, update, delete:cashEntryDelete} = require('./cash
 
 const router = express.Router();
 
-router.post('/CB/:id', verifyToken, create);
+router.post('/:id', verifyToken, create);
 router.get('/CB/:id', verifyToken, list);
 router.get('/:cashEntryId/CB/:id', verifyToken, details);
 router.put('/:cashEntryId/CB/:id', verifyToken, update);
